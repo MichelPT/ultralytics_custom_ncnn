@@ -193,6 +193,9 @@ class SPP(nn.Module):
     def forward(self, x):
         """Forward pass of the SPP layer, performing spatial pyramid pooling."""
         x = self.cv1(x)
+        x = x[x,x[:, self.c:,...]]
+        x.extend(m(x[-1]) for m in self.m)
+        x.pop(1)
         return self.cv2(torch.cat([x] + [m(x) for m in self.m], 1))
 
 
